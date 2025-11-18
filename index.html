@@ -1,163 +1,302 @@
-m<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uji Kecerdasan Digital</title>
+    <title>Uji Kecerdasan Digital Pancasila</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* BASE STYLES & FONTS */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f0f0f0 0%, #ffefef 100%); /* Light Red/White Gradient */
+            padding: 30px;
             color: #333;
+            line-height: 1.6;
         }
         .quiz-container {
-            max-width: 650px;
+            max-width: 800px;
             margin: auto;
             background: #ffffff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
         }
         h2 {
-            color: #007bff;
+            color: #cc0000; /* Deep Red */
             text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #007bff;
+            margin-bottom: 30px;
             padding-bottom: 10px;
+            font-weight: 700;
         }
-        .question {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
+        
+        /* QUESTION & OPTIONS STYLING */
+        .question-group {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #ff4d4d; /* Red Accent Bar */
             border-radius: 8px;
-            background-color: #f9f9f9;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .question-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
         }
         .options label {
             display: block;
-            margin: 8px 0;
+            margin: 10px 0;
             cursor: pointer;
-            padding: 8px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            transition: background-color 0.3s, box-shadow 0.3s, border-color 0.3s;
+            position: relative;
         }
         .options label:hover {
-            background-color: #e6f7ff;
+            background-color: #fff0f0; /* Very light red hover */
+            border-color: #ffcccc;
+            box-shadow: 0 1px 5px rgba(255, 77, 77, 0.2);
         }
+        .options input[type="radio"] {
+            margin-right: 10px;
+            opacity: 0; /* Hide default radio button */
+            position: absolute;
+        }
+        /* Custom styled radio button */
+        .options label::before {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #cc0000;
+            border-radius: 50%;
+            margin-right: 10px;
+            vertical-align: middle;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        /* Style for selected state (the "click effect") */
+        .options input:checked + span {
+            font-weight: 700;
+            color: #cc0000;
+        }
+        .options input:checked + span::before {
+            background-color: #cc0000;
+            border-color: #cc0000;
+        }
+
+        /* BUTTON STYLING */
         button {
             display: block;
             width: 100%;
-            padding: 12px;
-            background-color: #28a745;
+            padding: 15px;
+            background-color: #cc0000;
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 20px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(204, 0, 0, 0.4);
         }
         button:hover {
-            background-color: #218838;
+            background-color: #a30000;
+            box-shadow: 0 6px 15px rgba(204, 0, 0, 0.6);
         }
+
+        /* RESULTS STYLING (KUNCI JAWABAN) */
         #results {
-            margin-top: 30px;
-            padding: 20px;
-            border: 2px solid #007bff;
-            border-radius: 8px;
-            background-color: #e6f7ff;
+            margin-top: 40px;
+            padding: 30px;
+            border: 3px solid #cc0000;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #fff0f0 0%, #ffffff 100%);
+            text-align: left;
+            font-size: 1em;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        #results h3 {
+            color: #007bff;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
             text-align: center;
-            font-size: 1.1em;
-            display: none; /* Hide by default */
         }
-        .correct-answer {
-            color: #28a745;
-            font-weight: bold;
+        .feedback p {
+            padding: 8px 0;
+            border-bottom: 1px dotted #eee;
         }
-        .wrong-answer {
-            color: #dc3545;
-            font-weight: bold;
+        .feedback p:last-child {
+            border-bottom: none;
         }
+        .correct-answer { color: #007bff; font-weight: 600; }
+        .wrong-answer { color: #cc0000; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="quiz-container">
-    <h2>Uji Kecerdasan Digitalmu</h2>
-    <p>Jawablah 7 pertanyaan berikut untuk menguji pemahaman Anda terhadap Polarisasi Digital dan Konstitusi.</p>
+    <h2>Uji Kecerdasan Digitalmu (15 Soal)</h2>
+    <p>Uji pemahaman Anda mengenai hak, batasan konstitusi, dan mekanisme polarisasi di era digital.</p>
     
     <form id="quiz-form">
-        <div class="question">
-            <p>1. Pasal UUD 1945 yang secara eksplisit menetapkan batas dan kewajiban moral bagi kebebasan berekspresi, termasuk larangan ujaran kebencian, adalah:</p>
+        <div class="question-group">
+            <p class="question-text">1. Pasal UUD 1945 yang secara eksplisit menetapkan batas dan kewajiban moral bagi kebebasan berekspresi, termasuk larangan ujaran kebencian, adalah:</p>
             <div class="options">
-                <label><input type="radio" name="q1" value="A"> A. Pasal 28F</label>
-                <label><input type="radio" name="q1" value="B"> B. Pasal 28E Ayat (3)</label>
-                <label><input type="radio" name="q1" value="C"> C. Pasal 28J Ayat (1)</label>
-                <label><input type="radio" name="q1" value="D"> D. Pasal 27 Ayat (1)</label>
+                <label><input type="radio" name="q1" value="A"><span>A. Pasal 28F (Hak informasi)</span></label>
+                <label><input type="radio" name="q1" value="B"><span>B. Pasal 28E Ayat (3) (Hak berpendapat)</span></label>
+                <label><input type="radio" name="q1" value="C"><span>C. Pasal 28J Ayat (1) (Kewajiban menghormati hak orang lain)</span></label>
+                <label><input type="radio" name="q1" value="D"><span>D. Pasal 27 Ayat (1) (Kesamaan di mata hukum)</span></label>
             </div>
         </div>
 
-        <div class="question">
-            <p>2. Fenomena di mana masyarakat bergerak dari pandangan moderat dan berkonsentrasi pada dua posisi ekstrem yang saling bertentangan disebut:</p>
+        <div class="question-group">
+            <p class="question-text">2. Fenomena di mana masyarakat bergerak dari pandangan moderat dan berkonsentrasi pada dua posisi ekstrem yang saling bertentangan disebut:</p>
             <div class="options">
-                <label><input type="radio" name="q2" value="A"> A. Homogenisasi Sosial</label>
-                <label><input type="radio" name="q2" value="B"> B. Radikalisasi Ideologi</label>
-                <label><input type="radio" name="q2" value="C"> C. Polarisasi</label>
-                <label><input type="radio" name="q2" value="D"> D. Asimilasi Budaya</label>
+                <label><input type="radio" name="q2" value="A"><span>A. Homogenisasi Sosial</span></label>
+                <label><input type="radio" name="q2" value="B"><span>B. Radikalisasi Ideologi</span></label>
+                <label><input type="radio" name="q2" value="C"><span>C. Polarisasi</span></label>
+                <label><input type="radio" name="q2" value="D"><span>D. Asimilasi Budaya</span></label>
             </div>
         </div>
         
-        <div class="question">
-            <p>3. Mekanisme digital yang menampilkan konten yang hanya relevan dan sesuai dengan keyakinan pengguna, sehingga mengisolasi dari sudut pandang yang berbeda, disebut:</p>
+        <div class="question-group">
+            <p class="question-text">3. Mekanisme digital yang menampilkan konten yang hanya relevan dan sesuai dengan keyakinan pengguna, sehingga mengisolasi dari sudut pandang yang berbeda, disebut:</p>
             <div class="options">
-                <label><input type="radio" name="q3" value="A"> A. Disinformasi</label>
-                <label><input type="radio" name="q3" value="B"> B. Filter Bubble (Gelembung Filter)</label>
-                <label><input type="radio" name="q3" value="C"> C. Post-Truth Society</label>
-                <label><input type="radio" name="q3" value="D"> D. Disinhibisi Daring</label>
+                <label><input type="radio" name="q3" value="A"><span>A. Disinformasi</span></label>
+                <label><input type="radio" name="q3" value="B"><span>B. Filter Bubble (Gelembung Filter)</span></label>
+                <label><input type="radio" name="q3" value="C"><span>C. Post-Truth Society</span></label>
+                <label><input type="radio" name="q3" value="D"><span>D. Disinhibisi Daring</span></label>
             </div>
         </div>
 
-        <div class="question">
-            <p>4. Polarisasi politik yang didorong oleh kebencian emosional yang mendalam dan rasa tidak suka terhadap kelompok lawan, bukan perbedaan ideologi kebijakan, dikenal sebagai:</p>
+        <div class="question-group">
+            <p class="question-text">4. Polarisasi politik yang didorong oleh kebencian emosional yang mendalam dan rasa tidak suka terhadap kelompok lawan, dikenal sebagai:</p>
             <div class="options">
-                <label><input type="radio" name="q4" value="A"> A. Polarisasi Ideologis</label>
-                <label><input type="radio" name="q4" value="B"> B. Polarisasi Afektif</label>
-                <label><input type="radio" name="q4" value="C"> C. Kompromi Politik</label>
-                <label><input type="radio" name="q4" value="D"> D. Sikap Moderat</label>
+                <label><input type="radio" name="q4" value="A"><span>A. Polarisasi Ideologis</span></label>
+                <label><input type="radio" name="q4" value="B"><span>B. Polarisasi Afektif</span></label>
+                <label><input type="radio" name="q4" value="C"><span>C. Kompromi Politik</span></label>
+                <label><input type="radio" name="q4" value="D"><span>D. Sikap Moderat</span></label>
             </div>
         </div>
 
-        <div class="question">
-            <p>5. Fenomena *Unfollow* atau *Block* teman di media sosial akibat perbedaan pandangan politik adalah manifestasi dari dampak:</p>
+        <div class="question-group">
+            <p class="question-text">5. Fenomena *Unfollow* atau *Block* teman di media sosial akibat perbedaan pandangan politik adalah manifestasi dari dampak:</p>
             <div class="options">
-                <label><input type="radio" name="q5" value="A"> A. Kelelahan Informasi</label>
-                <label><input type="radio" name="q5" value="B"> B. Polarisasi Elit</label>
-                <label><input type="radio" name="q5" value="C"> C. Polarisasi Massa dan Afektif</label>
-                <label><input type="radio" name="q5" value="D"> D. Efek Silo Digital</label>
+                <label><input type="radio" name="q5" value="A"><span>A. Kelelahan Informasi</span></label>
+                <label><input type="radio" name="q5" value="B"><span>B. Polarisasi Elit</span></label>
+                <label><input type="radio" name="q5" value="C"><span>C. Polarisasi Massa dan Afektif</span></label>
+                <label><input type="radio" name="q5" value="D"><span>D. Efek Silo Digital</span></label>
             </div>
         </div>
 
-        <div class="question">
-            <p>6. Dampak langsung dari polarisasi elit politik yang tinggi terhadap fungsi pemerintahan dan negara adalah:</p>
+        <div class="question-group">
+            <p class="question-text">6. Dampak langsung dari polarisasi elit politik yang tinggi terhadap fungsi pemerintahan dan negara adalah:</p>
             <div class="options">
-                <label><input type="radio" name="q6" value="A"> A. Peningkatan konflik sosial horizontal</label>
-                <label><input type="radio" name="q6" value="B"> B. Penurunan angka partisipasi pemilu</label>
-                <label><input type="radio" name="q6" value="C"> C. Kebuntuan Legislatif (*Legislative Gridlock*) dan terhambatnya pembangunan</label>
-                <label><input type="radio" name="q6" value="D"> D. Penguatan identitas SARA di media sosial</label>
+                <label><input type="radio" name="q6" value="A"><span>A. Peningkatan konflik sosial horizontal</span></label>
+                <label><input type="radio" name="q6" value="B"><span>B. Penurunan angka partisipasi pemilu</span></label>
+                <label><input type="radio" name="q6" value="C"><span>C. Kebuntuan Legislatif (*Legislative Gridlock*) dan terhambatnya pembangunan</span></label>
+                <label><input type="radio" name="q6" value="D"><span>D. Penguatan identitas SARA di media sosial</span></label>
             </div>
         </div>
 
-        <div class="question">
-            <p>7. Istilah psikologis untuk kecenderungan seseorang bertindak lebih impulsif dan agresif di internet karena merasa anonim atau terlepas dari konsekuensi sosial adalah:</p>
+        <div class="question-group">
+            <p class="question-text">7. Istilah psikologis untuk kecenderungan seseorang bertindak lebih impulsif dan agresif di internet karena merasa anonim atau terlepas dari konsekuensi sosial adalah:</p>
             <div class="options">
-                <label><input type="radio" name="q7" value="A"> A. Efek *Echo Chamber*</label>
-                <label><input type="radio" name="q7" value="B"> B. Efek *Online Disinhibition*</label>
-                <label><input type="radio" name="q7" value="C"> C. Efek *Cyber-Balkanization*</label>
-                <label><input type="radio" name="q7" value="D"> D. Efek *Post-Truth*</label>
+                <label><input type="radio" name="q7" value="A"><span>A. Efek *Echo Chamber*</span></label>
+                <label><input type="radio" name="q7" value="B"><span>B. Efek *Online Disinhibition*</span></label>
+                <label><input type="radio" name="q7" value="C"><span>C. Efek *Cyber-Balkanization*</span></label>
+                <label><input type="radio" name="q7" value="D"><span>D. Efek *Post-Truth*</span></label>
+            </div>
+        </div>
+        
+        <div class="question-group">
+            <p class="question-text">8. Pasal UUD 1945 yang menjamin hak warga negara untuk mencari, memperoleh, dan menyampaikan informasi menggunakan segala jenis saluran (digital) adalah:</p>
+            <div class="options">
+                <label><input type="radio" name="q8" value="A"><span>A. Pasal 28E Ayat (3)</span></label>
+                <label><input type="radio" name="q8" value="B"><span>B. Pasal 28D Ayat (1)</span></label>
+                <label><input type="radio" name="q8" value="C"><span>C. Pasal 28F</span></label>
+                <label><input type="radio" name="q8" value="D"><span>D. Pasal 28I Ayat (1)</span></label>
             </div>
         </div>
 
-        <button type="button" onclick="calculateScore()">Lihat Hasil</button>
+        <div class="question-group">
+            <p class="question-text">9. Penggunaan label merendahkan ('cebong', 'kampret') adalah contoh paling nyata dari polarisasi digital yang mengarah pada:</p>
+            <div class="options">
+                <label><input type="radio" name="q9" value="A"><span>A. Kompromi Politik</span></label>
+                <label><input type="radio" name="q9" value="B"><span>B. Polarisasi Ideologis yang rasional</span></label>
+                <label><input type="radio" name="q9" value="C"><span>C. Polarisasi Afektif dan Dehumanisasi</span></label>
+                <label><input type="radio" name="q9" value="D"><span>D. *Cyber-Balkanization* semata</span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <p class="question-text">10. Kasus sindikat penyebar ujaran kebencian berbayar (seperti Saracen) menunjukkan bahwa polarisasi digital seringkali:</p>
+            <div class="options">
+                <label><input type="radio" name="q10" value="A"><span>A. Konflik spontan antar warga negara</span></label>
+                <label><input type="radio" name="q10" value="B"><span>B. Murni hasil dari algoritma *Filter Bubble*</span></label>
+                <label><input type="radio" name="q10" value="C"><span>C. Dikelola secara terstruktur dan komersial</span></label>
+                <label><input type="radio" name="q10" value="D"><span>D. Bentuk kritik yang dilindungi konstitusi</span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <p class="question-text">11. Dampak polarisasi politik yang paling merugikan bagi proses *deliberasi* (musyawarah) nasional adalah:</p>
+            <div class="options">
+                <label><input type="radio" name="q11" value="A"><span>A. Peningkatan *traffic* media sosial</span></label>
+                <label><input type="radio" name="q11" value="B"><span>B. Hilangnya kompromi dan kepercayaan pada institusi</span></label>
+                <label><input type="radio" name="q11" value="C"><span>C. Kebijakan publik menjadi lebih cepat</span></label>
+                <label><input type="radio" name="q11" value="D"><span>D. Penurunan angka pengangguran</span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <p class="question-text">12. Konsep yang menjelaskan hasil dari *Filter Bubble* yang diperkuat oleh interaksi kelompok sosial yang sejenis, membuat pandangan sendiri terasa absolut benar, disebut:</p>
+            <div class="options">
+                <label><input type="radio" name="q12" value="A"><span>A. Disinhibisi Daring</span></label>
+                <label><input type="radio" name="q12" value="B"><span>B. Efek *Silo* Digital</span></label>
+                <label><input type="radio" name="q12" value="C"><span>C. Echo Chamber (Ruang Gema)</span></label>
+                <label><input type="radio" name="q12" value="D"><span>D. *Cyber-Balkanization*</span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <p class="question-text">13. Polarisasi yang ditandai dengan kebuntuan kebijakan dan strategi *veto* di parlemen terjadi pada tingkat:</p>
+            <div class="options">
+                <label><input type="radio" name="q13" value="A"><span>A. Masyarakat Umum</span></label>
+                <label><input type="radio" name="q13" value="B"><span>B. Elit Politik</span></label>
+                <label><input type="radio" name="q13" value="C"><span>C. Polarisasi Afektif</span></label>
+                <label><input type="radio" name="q13" value="D"><span>D. Institusi Komersial</span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <p class="question-text">14. Kasus hukum Ahmad Dhani (2017) dan Muhammad Tamim Pardede (2017) merupakan contoh nyata konsekuensi hukum dari pelanggaran terhadap:</p>
+            <div class="options">
+                <label><input type="radio" name="q14" value="A"><span>A. UU Informasi dan Transaksi Elektronik (UU ITE)</span></label>
+                <label><input type="radio" name="q14" value="B"><span>B. UU Pers</span></label>
+                <label><input type="radio" name="q14" value="C"><span>C. UU Cipta Kerja</span></label>
+                <label><input type="radio" name="q14" value="D"><span>D. UU Pemilu</span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <p class="question-text">15. Prinsip demokrasi Pancasila yang paling terancam erosi akibat tingginya polarisasi dan *hate speech* adalah:</p>
+            <div class="options">
+                <label><input type="radio" name="q15" value="A"><span>A. Keadilan Sosial</span></label>
+                <label><input type="radio" name="q15" value="B"><span>B. Ketuhanan Yang Maha Esa</span></label>
+                <label><input type="radio" name="q15" value="C"><span>C. Kerakyatan yang dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan</span></label>
+                <label><input type="radio" name="q15" value="D"><span>D. Persatuan Indonesia</span></label>
+            </div>
+        </div>
+
+        <button type="button" onclick="calculateScore()">Lihat Hasil dan Kunci Jawaban</button>
     </form>
 
     <div id="results"></div>
@@ -165,7 +304,26 @@ m<!DOCTYPE html>
 
 <script>
     const correctAnswers = {
-        q1: 'C', q2: 'C', q3: 'B', q4: 'B', q5: 'C', q6: 'C', q7: 'B'
+        q1: 'C', q2: 'C', q3: 'B', q4: 'B', q5: 'C', q6: 'C', q7: 'B',
+        q8: 'C', q9: 'C', q10: 'C', q11: 'B', q12: 'C', q13: 'B', q14: 'A', q15: 'C'
+    };
+
+    const answerExplanations = {
+        q1: "Pasal 28J Ayat (1) menetapkan kewajiban menghormati hak orang lain, menjadi batas konstitusional bagi Pasal 28E.",
+        q2: "Polarisasi secara spesifik merujuk pada pembentukan dua kutub yang berlawanan dari posisi moderat.",
+        q3: "Filter Bubble adalah mekanisme algoritma yang mengisolasi pengguna, menyaring informasi yang tidak sesuai pandangan mereka.",
+        q4: "Polarisasi Afektif didorong oleh emosi negatif (kebencian, ketakutan) terhadap lawan politik, bukan perbedaan prinsip.",
+        q5: "Kerusakan hubungan interpersonal terjadi di tingkat masyarakat (massa) dan didorong oleh emosi (afektif).",
+        q6: "Polarisasi elit menyebabkan parlemen sulit mencapai konsensus, mengakibatkan terhentinya proses pembuatan kebijakan (legislative gridlock).",
+        q7: "Efek Online Disinhibition adalah kondisi psikologis di mana anonimitas mengurangi hambatan sosial untuk berperilaku ekstrem.",
+        q8: "Pasal 28F menjamin hak untuk berkomunikasi dan memperoleh/menyampaikan informasi melalui segala saluran, termasuk digital.",
+        q9: "Labelisasi merendahkan adalah ciri Polarisasi Afektif yang berujung pada Dehumanisasi lawan politik.",
+        q10: "Kasus Saracen menunjukkan adanya pihak yang mendapat keuntungan komersial dari penyebaran ujaran kebencian secara sistematis.",
+        q11: "Musyawarah menuntut kompromi dan kepercayaan. Polarisasi ekstrem menghilangkan keduanya, membuat proses deliberasi macet.",
+        q12: "Echo Chamber adalah ruang gema di mana pandangan sendiri terus diperkuat oleh lingkungan sosial yang homogen.",
+        q13: "Strategi *veto* dan kebuntuan legislatif adalah konflik yang berpusat pada pembuat kebijakan (elit politik).",
+        q14: "Kasus ujaran kebencian di ruang digital biasanya ditindaklanjuti dengan UU ITE, meskipun isinya merujuk pada pelanggaran Pasal 28J UUD 1945.",
+        q15: "Prinsip Kerakyatan yang berhikmat terletak pada 'Permusyawaratan'. Polarisasi dan ujaran kebencian secara langsung merusak musyawarah."
     };
 
     function calculateScore() {
@@ -173,36 +331,41 @@ m<!DOCTYPE html>
         const form = document.getElementById('quiz-form');
         const resultsDiv = document.getElementById('results');
         const totalQuestions = Object.keys(correctAnswers).length;
+        const feedbackContainer = document.createElement('div');
+        feedbackContainer.classList.add('feedback');
 
-        // Reset previous results and feedback
         resultsDiv.innerHTML = '';
         resultsDiv.style.display = 'block';
 
-        // Check answers and give detailed feedback
         for (let i = 1; i <= totalQuestions; i++) {
             const questionName = `q${i}`;
             const selectedAnswer = form.elements[questionName].value;
             const isCorrect = selectedAnswer === correctAnswers[questionName];
             const feedbackElement = document.createElement('p');
 
-            if (isCorrect) {
-                score++;
-                feedbackElement.innerHTML = `Soal ${i}: Jawaban Anda <span class="correct-answer">Benar</span>.`;
-            } else if (selectedAnswer) {
-                feedbackElement.innerHTML = `Soal ${i}: Jawaban Anda <span class="wrong-answer">Salah</span>. Jawaban yang benar adalah ${correctAnswers[questionName]}.`;
-            } else {
-                feedbackElement.innerHTML = `Soal ${i}: Anda <span class="wrong-answer">Belum Menjawab</span>.`;
-            }
-            resultsDiv.appendChild(feedbackElement);
+            let statusClass = isCorrect ? 'correct-answer' : 'wrong-answer';
+            let statusText = isCorrect ? 'BENAR' : (selectedAnswer ? 'SALAH' : 'BELUM DIJAWAB');
+
+            let correctAnswerDisplay = answerExplanations[questionName];
+
+            feedbackElement.innerHTML = `
+                <span class="${statusClass}">[${statusText}]</span> Soal ${i}: 
+                <br>
+                Jawaban Benar: <span class="correct-answer">${correctAnswers[questionName]}</span>
+                <br>
+                <small>Penjelasan: ${correctAnswerDisplay}</small>
+            `;
+            feedbackContainer.appendChild(feedbackElement);
+
+            if (isCorrect) score++;
         }
 
-        // Display final score
         const finalScoreElement = document.createElement('h3');
-        finalScoreElement.innerHTML = `Skor Akhir Anda: ${score} dari ${totalQuestions}`;
+        const percentage = (score / totalQuestions) * 100;
+        finalScoreElement.innerHTML = `Skor Akhir Anda: ${score} dari ${totalQuestions} (${percentage.toFixed(0)}%)`;
         
-        resultsDiv.prepend(finalScoreElement);
-
-        // Scroll to results
+        resultsDiv.appendChild(finalScoreElement);
+        resultsDiv.appendChild(feedbackContainer);
         resultsDiv.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
